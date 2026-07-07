@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="LegendaryItemsEngine.Api/LegendaryItemsEngine.Api.csproj" />
+  <Project Path="LegendaryItemsEngine.Data/LegendaryItemsEngine.Data.csproj" />
+</Solution>
