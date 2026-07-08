@@ -20,7 +20,7 @@ public enum OrderStatus
 {
     Pending,
     Fulfilled,
-    Backordered
+    Backordered //No stock available
 }
 
 public class ItemOrder
