@@ -6,7 +6,9 @@ namespace LegendaryItemsEngine.Data;
 public class LegendaryItemsDbContext : DbContext
 {
     // Constructor obligatorio para que la API le pase la configuración de la conexión (Docker)
-    public LegendaryItemsDbContext(DbContextOptions<LegendaryItemsDbContext> options) : base(options) {}
+    public LegendaryItemsDbContext(DbContextOptions<LegendaryItemsDbContext> options) : base(options)
+    {
+    }
 
     //Declaramos las tablas que EF Core va a crear en la base de datos
     //We need to tell our DbContext what C# classes we are tracking as Entities

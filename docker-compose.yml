@@ -1,0 +1,21 @@
+version: '3.8'
+
+#docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=..." -p 1433:1433 --name mssql 
+# -d mcr.microsoft.com/mssql/server:2022-latest
+
+#We use docker compose up -d in consolo to create our container in Docker
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: LegendaryItemsDB_Container
+    ports:
+      - "1433:1433" 
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=LegItemsEng@2026! # Contraseña / password
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+volumes:
+  sqlserver_data:
