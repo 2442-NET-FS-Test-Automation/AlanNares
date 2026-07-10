@@ -16,6 +16,14 @@ public class FulfillmentController : ControllerBase
     }
 
     // Endpoint que procesa de golpe todas las órdenes pendientes en la cola usando concurrencia
+
+    /// <summary>
+    /// Flushes the pending queue, processing all queued orders concurrently via asynchronous worker threads.
+    /// </summary>
+    /// <param name="ct">The cancellation token that triggers database rollbacks if the connection is closed mid-transit.</param>
+    /// <response code="200">The fulfillment engine execution finished. Returns metrics of successful vs failed operations.</response>
+    /// <response code="400">The processing request was rejected because the order queue is currently empty.</response>
+    /// <response code="499">Asynchronous worker tasks or waiting processes were safely cancelled due to a client-side abort.</response>
     [HttpPost("process-all")]
     public async Task<IActionResult> ProcessAllOrders(CancellationToken ct)
     {

@@ -19,6 +19,14 @@ public class OrdersController : ControllerBase
     }
 
     // Create one order
+    /// <summary>
+    /// Receives a purchase request and routes it directly into the in-memory priority queue.
+    /// </summary>
+    /// <param name="dto">The customer data transfer object containing product details and priority level.</param>
+    /// <param name="ct">The cancellation token to abort thread execution if the client drops the request.</param>
+    /// <response code="200">The order was successfully validated and placed into the priority queue.</response>
+    /// <response code="400">Invalid order payload, such as a quantity less than or equal to zero.</response>
+    /// <response code="499">The client cancelled the HTTP connection before the order could be enqueued.</response>
     [HttpPost]
     public IActionResult CreateOrder([FromBody] CreateOrderDto dto, CancellationToken ct)
     {
@@ -49,6 +57,14 @@ public class OrdersController : ControllerBase
     }
 
     // burst 50 orders
+    /// <summary>
+    /// Simulates a heavy bulk-traffic event by enqueuing multiple concurrent orders with randomized priority.
+    /// </summary>
+    /// <param name="itemId">The identifier of the product targeted for the burst scenario.</param>
+    /// <param name="totalOrders">The total volume of simulated orders to generate (Default is 50).</param>
+    /// <param name="ct">The cancellation token to interrupt loop execution if the simulation is aborted by the client.</param>
+    /// <response code="200">Successfully generated and enqueued the simulated load into the engine.</response>
+    /// <response code="499">The burst simulation loop was interrupted and terminated due to client cancellation.</response>
     [HttpPost("simulate-burst")]
     public IActionResult SimulateBurst([FromQuery] int itemId, [FromQuery] int totalOrders = 50, CancellationToken ct = default)
     {

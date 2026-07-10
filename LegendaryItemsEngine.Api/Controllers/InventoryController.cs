@@ -18,6 +18,10 @@ public class InventoryController : ControllerBase
         _context = context;
     }
 
+    /// <summary>
+    /// We can create a new Item 
+    /// </summary>
+    /// <response code="200">New Item added successfully</response>
     // Endpoint: Create new item 
     [HttpPost("create-item")]
     public async Task<IActionResult> CreateItem([FromBody] CreateItemDto dto, CancellationToken ct)
@@ -54,6 +58,10 @@ public class InventoryController : ControllerBase
         return Ok(new { Message = $"Ítem '{dto.Name}' created with ID {newItem.Id}." });
     }
 
+    /// <summary>
+    /// Here we can update our Stock from inventory with an ItemId and setting newStock
+    /// </summary>
+    /// <response code="200">We updated our stock from the ItemId you give.</response>
     [HttpPut("update-stock")]
     public async Task<IActionResult> UpdateStock([FromBody] UpdateStockDto dto, CancellationToken ct)
     {
@@ -80,6 +88,10 @@ public class InventoryController : ControllerBase
         return Ok(new { Message = $"Stock del Ítem {dto.ItemId} actualizado a {dto.NewStock} unidades." });
     }
 
+    /// <summary>
+    /// Performs a live audit of the inventory system to ensure data integrity.
+    /// </summary>
+    /// <response code="200">Returns the full inventory status and confirms no items have negative stock.</response>
     [HttpGet("verify-no-oversell")]
     public async Task<IActionResult> VerifyNoOversell(CancellationToken ct)
     {
