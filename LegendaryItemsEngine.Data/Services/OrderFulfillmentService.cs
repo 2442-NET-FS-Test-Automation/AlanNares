@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using LegendaryItemsEngine.Data.Models;
 using LegendaryItemsEngine.Data.Repositories;
 using Serilog;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LegendaryItemsEngine.Data.Services;
 
@@ -9,12 +10,13 @@ public class OrderFulfillmentService : IOrderFulfillmentService
 {
     // La estructura de datos que ordenará todo automáticamente por el enum numérico
     private readonly PriorityQueue<ItemOrder, int> _orderQueue = new();
-    private readonly IInventoryRepository _inventoryRepository;
+    //private readonly IInventoryRepository _inventoryRepository;
+    private readonly IServiceScopeFactory _scopeFactory;
 
     // Inyectamos el repositorio que creamos en el paso anterior
-    public OrderFulfillmentService(IInventoryRepository inventoryRepository)
+    public OrderFulfillmentService(IServiceScopeFactory scopeFactory)
     {
-        _inventoryRepository = inventoryRepository;
+        _scopeFactory = scopeFactory;
     }
 
     public void EnqueueOrder(ItemOrder order)
@@ -41,13 +43,17 @@ public class OrderFulfillmentService : IOrderFulfillmentService
         
         for (int attempt = 1; attempt <= maxRetries; attempt++)
         {
+            // Temporal scope
+            using var scope = _scopeFactory.CreateScope();
+            var inventoryRepository = scope.ServiceProvider.GetRequiredService<IInventoryRepository>();
+
             try
             {
                 Log.Information("Processing Order {OrderId} (Attempt {Attempt}/{MaxRetries}) for Item {ItemId}", 
                     order.Id, attempt, maxRetries, order.Line.ItemId);
 
                 // Intentamos restar el stock usando nuestro repositorio
-                bool success = await _inventoryRepository.TryDeductStockAsync(order.Line.ItemId, order.Line.Quantity);
+                bool success = await inventoryRepository.TryDeductStockAsync(order.Line.ItemId, order.Line.Quantity);
 
                 if (success)
                 {
@@ -70,7 +76,7 @@ public class OrderFulfillmentService : IOrderFulfillmentService
                     // Si ya agotamos los 3 intentos, la orden se marca como fallida por colisión extrema
                     order.Status = OrderStatus.Backordered;
                     Log.Error("Order {OrderId} failed after {MaxRetries} attempts due to heavy concurrency lock.", order.Id, maxRetries);
-                    throw;
+                    
                 }
 
                 // Esperamos un breve parpadeo (50ms) antes de volver a intentar para dejar respirar a la base de datos
