@@ -1,6 +1,6 @@
 # Order Fulfillment Engine
 
-This project is a high-concurrency order processing engine designed using **.NET **, **Entity Framework Core**, and **Docker (SQL Server)**. The system architecture simulates a high-traffic gaming environment where multiple users attempt to purchase items simultaneously, requiring robust race-condition mitigation and priority-based queue management.
+This project is a high-concurrency order processing engine designed using **.NET**, **Entity Framework Core**, and **Docker (SQL Server)**. The system architecture simulates a high-traffic gaming environment where multiple users attempt to purchase items simultaneously, requiring robust race-condition mitigation and priority-based queue management.
 
 ---
 
